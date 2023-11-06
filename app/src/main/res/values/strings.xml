@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">it_learn_app</string>
+    <string name="question_label_text">Question</string>
+    <string name="question_text">question</string>
+    <string name="result_text">answer result</string>
+    <string name="enter_button_text">donne</string>
+</resources>
