@@ -1,36 +1,25 @@
 package com.example.it_learn_app
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.SyncStateContract.Helpers.update
-import androidx.constraintlayout.motion.utils.ViewState
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.it_learn_app.databinding.ActivityMainBinding
-import com.example.it_learn_app.model.QuestionManager
+import com.example.it_learn_app.model.GameStateViewModel
+
+
+var randomValue = (1..10).random()
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private val questionManager: QuestionManager = QuestionManager()
+    lateinit var activityMainBinding: ActivityMainBinding
+    private val gameStateViewModel: GameStateViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Initilize Ui
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-
-        binding.enterButton.setOnClickListener {
-
-
-            
-        }
-    }
-
-    private fun isAnswerCorect(): Boolean{
-        if(questionManager.curentQuestion.answer == binding.questionAnswer.text.toString())
-            return  true
-
-        return  false
     }
 }
 
