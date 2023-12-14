@@ -1,37 +1,82 @@
 package com.example.it_learn_app
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import android.provider.SyncStateContract.Helpers.update
-import androidx.constraintlayout.motion.utils.ViewState
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import com.example.it_learn_app.databinding.ActivityMainBinding
-import com.example.it_learn_app.model.QuestionManager
+import com.example.it_learn_app.model.GameStateViewModel
+import androidx.activity.viewModels
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import com.example.it_learn_app.model.QuestionManagerViewModel
+
+var randomValue = (1..10).random()
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private val questionManager: QuestionManager = QuestionManager()
+    private lateinit var activityMainBinding: ActivityMainBinding
+
+    // ViewModels
+    private val gameStateViewModel: GameStateViewModel by viewModels()
+    private val questionManagerViewModel:QuestionManagerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // Initialize UI
+        activityMainBinding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+        activityMainBinding.lifecycleOwner = this
+        activityMainBinding.questionManagerViewModel = questionManagerViewModel
 
+        gameStateViewModel.curentGameState.observe(this, Observer { updateUi(it) })
+        activityMainBinding.enterButton.setOnClickListener{gameStateViewModel.updateState()}
+    }
 
-        binding.enterButton.setOnClickListener {
-
-
-            
+    fun updateUi(gameState:GameStateViewModel.GameState){
+        when(gameState){
+            GameStateViewModel.GameState.UPDATEQUESTION -> {
+                questionManagerViewModel.nextQuest()
+                gameStateViewModel.updateState()
+            }
+            GameStateViewModel.GameState.ANSWERQUESTION -> {
+                activityMainBinding.questionAnswer.setEnabled(true)
+                setInputFieldFocus()
+            }
+            GameStateViewModel.GameState.CHECKANSWER -> {
+                activityMainBinding.questionAnswer.setEnabled(false)
+                checkQuestion()
+            }
+            GameStateViewModel.GameState.RESETQUIZ ->{
+                activityMainBinding.questionAnswerResult.text = ""
+                activityMainBinding.questionAnswer.text.clear()
+                gameStateViewModel.updateState()
+            }
         }
     }
 
-    private fun isAnswerCorect(): Boolean{
-        if(questionManager.curentQuestion.answer == binding.questionAnswer.text.toString())
-            return  true
+    fun setInputFieldFocus(){
+        activityMainBinding.questionAnswer.requestFocus()
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(activityMainBinding.questionAnswer, InputMethodManager.SHOW_IMPLICIT)
+    }
 
-        return  false
+    fun checkQuestion(){
+        val corectAnswer = questionManagerViewModel.curentQuest.value!!.answer
+        if(questionManagerViewModel.checkAnswer(activityMainBinding.questionAnswer.text.toString())){
+            showGameMesage(Color.GREEN,getString(R.string.right_answer,corectAnswer))
+        }
+        else
+        {
+            showGameMesage(Color.RED,getString(R.string.wrong_answer_message,corectAnswer))
+        }
+    }
+
+    fun showGameMesage(color:Int, mesage:String){
+        activityMainBinding.questionAnswerResult.setTextColor(color)
+        activityMainBinding.questionAnswerResult.text = mesage
     }
 }
-
 
