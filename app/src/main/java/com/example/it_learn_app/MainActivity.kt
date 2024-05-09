@@ -1,82 +1,46 @@
 package com.example.it_learn_app
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
+import android.util.Log
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import com.example.it_learn_app.R
 import com.example.it_learn_app.databinding.ActivityMainBinding
-import com.example.it_learn_app.model.GameStateViewModel
-import androidx.activity.viewModels
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import com.example.it_learn_app.model.QuestionManagerViewModel
-
-var randomValue = (1..10).random()
-
+import com.google.android.material.appbar.MaterialToolbar
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var activityMainBinding: ActivityMainBinding
-
-    // ViewModels
-    private val gameStateViewModel: GameStateViewModel by viewModels()
-    private val questionManagerViewModel:QuestionManagerViewModel by viewModels()
-
+    val TAG:String = "MainActivity"
+    lateinit var navController:NavController
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Initilize view
         super.onCreate(savedInstanceState)
-        // Initialize UI
-        activityMainBinding = DataBindingUtil.setContentView(this,R.layout.activity_main)
-        activityMainBinding.lifecycleOwner = this
-        activityMainBinding.questionManagerViewModel = questionManagerViewModel
+        enableEdgeToEdge()
 
-        gameStateViewModel.curentGameState.observe(this, Observer { updateUi(it) })
-        activityMainBinding.enterButton.setOnClickListener{gameStateViewModel.updateState()}
-    }
+        Log.d(TAG, "Start Create Activity")
+        Log.d(TAG, "Start Create Binding")
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        Log.d(TAG, "Binding created")
+        Log.d(TAG, "Start set content view")
+        setContentView(binding.root)
+        Log.d(TAG, "Content view seted")
 
-    fun updateUi(gameState:GameStateViewModel.GameState){
-        when(gameState){
-            GameStateViewModel.GameState.UPDATEQUESTION -> {
-                questionManagerViewModel.nextQuest()
-                gameStateViewModel.updateState()
-            }
-            GameStateViewModel.GameState.ANSWERQUESTION -> {
-                activityMainBinding.questionAnswer.setEnabled(true)
-                setInputFieldFocus()
-            }
-            GameStateViewModel.GameState.CHECKANSWER -> {
-                activityMainBinding.questionAnswer.setEnabled(false)
-                checkQuestion()
-            }
-            GameStateViewModel.GameState.RESETQUIZ ->{
-                activityMainBinding.questionAnswerResult.text = ""
-                activityMainBinding.questionAnswer.text.clear()
-                gameStateViewModel.updateState()
-            }
+        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHost.navController
+
+        val topAppBar = binding.topAppBar
+        setSupportActionBar(topAppBar)
+        setupActionBarWithNavController(this,navController)
+
+
+        topAppBar.setNavigationOnClickListener {
+            navController.navigateUp()
         }
-    }
-
-    fun setInputFieldFocus(){
-        activityMainBinding.questionAnswer.requestFocus()
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(activityMainBinding.questionAnswer, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    fun checkQuestion(){
-        val corectAnswer = questionManagerViewModel.curentQuest.value!!.answer
-        if(questionManagerViewModel.checkAnswer(activityMainBinding.questionAnswer.text.toString())){
-            showGameMesage(Color.GREEN,getString(R.string.right_answer,corectAnswer))
-        }
-        else
-        {
-            showGameMesage(Color.RED,getString(R.string.wrong_answer_message,corectAnswer))
-        }
-    }
-
-    fun showGameMesage(color:Int, mesage:String){
-        activityMainBinding.questionAnswerResult.setTextColor(color)
-        activityMainBinding.questionAnswerResult.text = mesage
     }
 }
-

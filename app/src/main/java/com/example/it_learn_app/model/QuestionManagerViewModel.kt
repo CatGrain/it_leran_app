@@ -17,8 +17,8 @@ class QuestionManagerViewModel : ViewModel() {
 
     private lateinit var _curentQuestCreator:QuestionCreator
 
-    init {
-        _curentQuestCreator = BinaryQuestionCreator(0,255,2)
+    fun setQuestData(questionCreator: QuestionCreator){
+        _curentQuestCreator = questionCreator
     }
 
     fun nextQuest(){
@@ -26,9 +26,6 @@ class QuestionManagerViewModel : ViewModel() {
     }
 
     fun checkAnswer(answer:String):Boolean{
-        if(_curentQuest.value!!.answer == answer) {
-            return true
-        }
-        return false
+        return _curentQuest.value!!.answer == answer
     }
 }

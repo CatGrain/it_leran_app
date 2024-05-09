@@ -6,8 +6,6 @@
     android:name="com.example.it_learn_app.Ui.SelectQuestionTypeList"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".Ui.FragmentSelectQuestionTypeList"
-    tools:listitem="@layout/fragment_select_question_type_list" />
+    tools:context=".quizSelection.FragmentSelectQuestionTypeList"
+    tools:listitem="@layout/fragment_select_question_type_list"/>
