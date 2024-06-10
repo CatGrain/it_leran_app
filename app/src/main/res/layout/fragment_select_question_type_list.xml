@@ -6,7 +6,7 @@
     <data>
         <variable
             name="quizData"
-            type="com.example.it_learn_app.data.QuizInfoData"/>
+            type="com.example.it_learn_app.data.QuizData"/>
     </data>
 
    <androidx.constraintlayout.widget.ConstraintLayout

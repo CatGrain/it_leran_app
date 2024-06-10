@@ -2,17 +2,15 @@ package com.example.it_learn_app
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
-import com.example.it_learn_app.R
+import androidx.navigation.ui.NavigationUI.onNavDestinationSelected
+import androidx.navigation.ui.setupWithNavController
 import com.example.it_learn_app.databinding.ActivityMainBinding
-import com.google.android.material.appbar.MaterialToolbar
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,16 +29,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         Log.d(TAG, "Content view seted")
 
-        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                as NavHostFragment
         navController = navHost.navController
 
         val topAppBar = binding.topAppBar
-        setSupportActionBar(topAppBar)
-        setupActionBarWithNavController(this,navController)
+        topAppBar.setupWithNavController(navController)
+    }
 
-
-        topAppBar.setNavigationOnClickListener {
-            navController.navigateUp()
-        }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(TAG, "MenuItem selected: " + item.itemId)
+        val handled = onNavDestinationSelected(item, navController)
+        Log.d(TAG, "Navigation handled: $handled")
+        return handled || super.onOptionsItemSelected(item)
     }
 }

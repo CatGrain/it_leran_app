@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.example.it_learn_app.data.QuizData
-import com.example.it_learn_app.data.QuizInfoData
+import com.example.it_learn_app.data.QuizDataSource
 import com.example.it_learn_app.databinding.FragmentSelectQuestionTypeListBinding
 
 
-class SelectQuestionTypeListRecyclerViewAdapter(val lifecycleOwner: LifecycleOwner,val onClick: (QuizInfoData) -> Unit) : RecyclerView.Adapter<SelectQuestionTypeListRecyclerViewAdapter.QuizDataViewHolder>() {
+class SelectQuestionTypeListRecyclerViewAdapter(val lifecycleOwner: LifecycleOwner,val onClick: (QuizData) -> Unit) : RecyclerView.Adapter<SelectQuestionTypeListRecyclerViewAdapter.QuizDataViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuizDataViewHolder {
         return QuizDataViewHolder(
             FragmentSelectQuestionTypeListBinding.inflate(
@@ -22,7 +22,7 @@ class SelectQuestionTypeListRecyclerViewAdapter(val lifecycleOwner: LifecycleOwn
 
     class QuizDataViewHolder(val binding: FragmentSelectQuestionTypeListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bindView(lifecycleOwner: LifecycleOwner,quizData:QuizInfoData,callBack: (QuizInfoData) -> Unit){
+        fun bindView(lifecycleOwner: LifecycleOwner,quizData:QuizData,callBack: (QuizData) -> Unit){
             binding.lifecycleOwner = lifecycleOwner
             binding.quizData = quizData
             binding.root.setOnClickListener{callBack(quizData)}
@@ -30,11 +30,11 @@ class SelectQuestionTypeListRecyclerViewAdapter(val lifecycleOwner: LifecycleOwn
     }
 
     override fun getItemCount(): Int {
-        return QuizData.quizData.size
+        return QuizDataSource.quizSource.size
     }
 
     override fun onBindViewHolder(holder: QuizDataViewHolder, position: Int) {
-        val item = QuizData.quizData[position]
+        val item = QuizDataSource.quizSource[position]
         holder.bindView(lifecycleOwner,item,onClick)
     }
 }

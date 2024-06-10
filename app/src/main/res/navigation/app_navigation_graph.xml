@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_navigation_graph"
+    app:startDestination="@id/fragmentSelectQuestionTypeList">
+
+    <fragment
+        android:id="@+id/fragmentSelectQuestionTypeList"
+        android:name="com.example.it_learn_app.quizSelection.FragmentSelectQuestionTypeList"
+        android:label="Quiestion Select"
+        tools:layout="@layout/fragment_select_question_type_list_list">
+        <action
+            android:id="@+id/action_fragmentSelectQuestionTypeList_to_quizGame"
+            app:destination="@id/quizGame" />
+    </fragment>
+    <fragment
+        android:id="@+id/quizGame"
+        android:name="com.example.it_learn_app.quizGame.quizGame"
+        android:label="Quiz">
+        <action
+            android:id="@+id/action_quizGame_to_fragmentSelectQuestionTypeList"
+            app:destination="@id/fragmentSelectQuestionTypeList" />
+    </fragment>
+</navigation>
